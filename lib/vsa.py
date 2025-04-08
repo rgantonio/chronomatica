@@ -103,7 +103,6 @@ def hv_add(hvs, sign_magnitude=False, threshold=None):
     
     return result
 
-
 # Subtraction of two hypervectors
 def hv_sub(hv1, hv2):
     """
