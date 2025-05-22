@@ -3,6 +3,8 @@
 - This way we can get a better understanding of how the architecture is built and how it works
 - The `resnet20.ipynb` file is used to investigate some details. You can check this out if you want.
 - ResNet20 was originally used to process CIFAR-10. Means there are 10 classes in the end.
+- The performance of ResNet20 on CIFAR-100 is poor - around 68% only
+  - You can check it from the `resnet20-cifar100.ipynb`
 
 # Model Layers
 - There are 4 major sections
