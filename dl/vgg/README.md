@@ -5,6 +5,7 @@
 - The motivation is to move the MLP layer later to an HDC operation
 - *Note:* VGG is an outdated model, but it is only used as a nice test case for characterization of some HW architectures
 - *Note:* When using VGG16 for CIFAR dataset, it will never have a better accuracy if you stick to the vanilla implementation. It needs to upscale the input to $(3,224,224)$ which was intended for ImageNet.
+- There is a nice experiment on combining VGG16 with HDC done below. The FSL-HDNN technique though, if you read precisely, shows that the integer-based hypervectors result in 50% accuracy only. It is very poor. Going into binary reduces this even further. It needs to be augmented with binary neural network in the end.
 
 ## File Descriptions
 
