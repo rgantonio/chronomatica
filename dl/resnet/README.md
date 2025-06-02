@@ -7,6 +7,7 @@
   - You can check it from the `resnet20-cifar100.ipynb`
 - There is a code [pytorch-resnet50-vanilla-cifar100](pytorch-resnet50-vanilla-cifar100.ipynb) used for training CIFAR100 in a vanilla way.
   - Currently it needs to improve the quantization mechanism.
+- The code [pytorch-resnet50-hdc-trial](pytorch-resnet50-hdc-trial.ipynb) is used for the combination of ResNet and HDC all together.
 
 # Model Layers
 - There are 4 major sections
