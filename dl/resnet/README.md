@@ -1,16 +1,19 @@
-# ResNet20 Study
-- In this directory, we try to break down details about the ResNet 20 architecture
+# ResNet Study
+- In this directory, we try to break down details about the ResNet architecture
 - This way we can get a better understanding of how the architecture is built and how it works
-- The `resnet20.ipynb` file is used to investigate some details. You can check this out if you want.
+- The `resnet20.ipynb` file is used to investigate some basic details. You can check this out if you want.
 - ResNet20 was originally used to process CIFAR-10. Means there are 10 classes in the end.
 - The performance of ResNet20 on CIFAR-100 is poor - around 68% only
   - You can check it from the `resnet20-cifar100.ipynb`
+- There is a code [pytorch-resnet50-vanilla-cifar100](pytorch-resnet50-vanilla-cifar100.ipynb) used for training CIFAR100 in a vanilla way.
+  - Currently it needs to improve the quantization mechanism.
 
 # Model Layers
 - There are 4 major sections
   - Initial convolution layer
   - Blocks 1, 2, and 3
   - Final layer with average pooling and a fully-connected (FC) unit
+- The model below is for ResNet20!
 
 ## Initial Convolution Layer
 
