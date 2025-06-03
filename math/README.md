@@ -4,3 +4,4 @@
 ## Filelist
 - `linear-bilinear-interpolations.ipynb` - mathematical information about interpolation in 1D and 2D.
 - `image-upscaling-and-sharpen.ipynb` - example for upscaling and sharpening of images. Uses CIFAR-100 as an example.
+- `circular-random-projection.ipynb` - concept of circular random projection to avoid saving larger matrices.
