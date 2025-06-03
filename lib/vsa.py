@@ -57,7 +57,7 @@ def hv_cos(hv1, hv2):
         return dot_product / (norm_hv1 * norm_hv2)
     
 # Hamming distance between two hypervectors
-def hv_ham(hv1, hv2):
+def hv_ham(hv1, hv2, normalize=True):
     """
     Compute the Hamming distance between two hypervectors.
     Parameters:
@@ -66,7 +66,10 @@ def hv_ham(hv1, hv2):
     Returns:
     int: The Hamming distance between the two hypervectors.
     """
-    return np.sum(hv1 != hv2)
+    if normalize:
+        return np.sum(hv1 != hv2) / len(hv1)
+    else:
+        return np.sum(hv1 != hv2)
 
 # Circular permutation of a hypervector
 def hv_perm(hv, shift):
