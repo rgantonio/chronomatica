@@ -118,11 +118,12 @@ def hv_perm(hv, shift):
 # Adding hypervectors in a list with
 # an sign magnitude to convert to bipolar
 # and an optional binarization with configurable threshold for binarization
-def hv_add(hvs, sign_magnitude=False, threshold=None):
+def hv_add(hvs, dont_flatten=False, sign_magnitude=False, threshold=None):
     """
     Add a list of hypervectors together.
     Parameters:
     hvs (list): A list of hypervectors to add.
+    dont_flatten (bool): If True, return the summed vector without flattening.
     sign_magnitude (bool): If True, convert to bipolar using sign magnitude.
     threshold (float): Threshold for binarization.
     Returns:
@@ -130,13 +131,18 @@ def hv_add(hvs, sign_magnitude=False, threshold=None):
     """
     result = np.sum(hvs, axis=0)
 
+    if dont_flatten:
+        return result
+
     if sign_magnitude:
         result = np.sign(result)
+        return result
 
     if threshold is not None:
         result = np.where(result >= threshold, 1, 0)
+        return result
 
-    return result
+    
 
 
 # Subtraction of two hypervectors
