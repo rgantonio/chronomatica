@@ -1,5 +1,5 @@
 # --------------------------------------------
-# Copyright 2024 KU Leuven
+# Copyright 2025 KU Leuven
 # Ryan Antonio <ryan.antonio@esat.kuleuven.be
 #
 # Description:
