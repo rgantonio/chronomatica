@@ -9,6 +9,8 @@
 import urllib.request
 import zipfile
 import tarfile
+import random
+from tqdm import tqdm
 from pathlib import Path
 
 # For downloading and extracting archives
@@ -61,7 +63,60 @@ def download_and_extract(
         archive_path.unlink()
         print(f"Deleted archive: {archive_path.name}")
 
-    print("Done.")
+    print("Extraction complete!")
+
+# Read data
+def read_data(class_list, data_path):
+    X_data = dict()
+    for class_label in tqdm(class_list, desc="Reading data"):
+        # Training dataset
+        read_file = f"{data_path}/{class_label}.txt"
+        X_data[class_label] = load_dataset(read_file)
+    return X_data
+        
+# For splitting data into two sets
+def split_data(X_data, class_list, split_percent = 0.8):
+    # Initialize empty dictionaries
+    X_split_data1 = dict()
+    X_split_data2 = dict()
+
+    for class_label in tqdm(class_list, desc="Splitting data"):
+        # Get item counts first
+        item_len = len(X_data[class_label])
+        split1_len = round(item_len * split_percent)
+        split2_len = item_len - split1_len
+        
+        # Randomize the contents of the list first
+        random.shuffle(X_data[class_label])
+        
+        # Get split 1 first
+        split1_list = []
+        for item_num in range(split1_len):
+            split1_list.append(X_data[class_label][item_num])
+        
+        # Get split 2 next but starts at split1_len count
+        split2_list = []
+        for item_num in range(split1_len,split1_len+split2_len):
+            split2_list.append(X_data[class_label][item_num])
+        
+        # Load into dictionaries
+        X_split_data1[class_label] = split1_list
+        X_split_data2[class_label] = split2_list
+
+    return X_split_data1, X_split_data2
+
+# For reading and loading a data
+def load_dataset(file_path):
+    # Initialize empty data set array
+    dataset = []
+    with open(file_path, "r") as rf:
+        for line in rf:
+            line = line.strip().split()
+            int_line = [int(x) for x in line]
+            dataset.append(int_line)
+    # Close the file
+    rf.close()
+    return dataset
 
 # For scaling values to 0-255
 def scale_to_255(value):
