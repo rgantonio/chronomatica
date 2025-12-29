@@ -1,10 +1,6 @@
-# --------------------------------------------
-# Copyright 2024 KU Leuven
-# Ryan Antonio <ryan.antonio@esat.kuleuven.be>
-
-# Description:
-# Utility programs and functions data extraction
-# --------------------------------------------
+"""
+Utility functions for data extraction and processing.
+"""
 
 import urllib.request
 import zipfile
@@ -65,17 +61,34 @@ def download_and_extract(
 
     print("Extraction complete!")
 
-# Read data
 def read_data(class_list, data_path):
+    """
+    Read data from files for each class label.
+    Args:
+        class_list: list of class labels
+        data_path: path to the data files
+    Returns:
+        X_data: dictionary with class labels as keys and data lists as values
+    """
     X_data = dict()
     for class_label in tqdm(class_list, desc="Reading data"):
         # Training dataset
         read_file = f"{data_path}/{class_label}.txt"
         X_data[class_label] = load_dataset(read_file)
     return X_data
-        
-# For splitting data into two sets
+
+
 def split_data(X_data, class_list, split_percent = 0.8):
+    """
+    Split data into two parts based on split_percent.
+    Args:
+        X_data: dictionary with class labels as keys and data lists as values
+        class_list: list of class labels
+        split_percent: percentage of data to go into first split
+    Returns:
+        X_split_data1: first split of data
+        X_split_data2: second split of data
+    """
     # Initialize empty dictionaries
     X_split_data1 = dict()
     X_split_data2 = dict()
@@ -85,20 +98,20 @@ def split_data(X_data, class_list, split_percent = 0.8):
         item_len = len(X_data[class_label])
         split1_len = round(item_len * split_percent)
         split2_len = item_len - split1_len
-        
+
         # Randomize the contents of the list first
         random.shuffle(X_data[class_label])
-        
+
         # Get split 1 first
         split1_list = []
         for item_num in range(split1_len):
             split1_list.append(X_data[class_label][item_num])
-        
+
         # Get split 2 next but starts at split1_len count
         split2_list = []
         for item_num in range(split1_len,split1_len+split2_len):
             split2_list.append(X_data[class_label][item_num])
-        
+
         # Load into dictionaries
         X_split_data1[class_label] = split1_list
         X_split_data2[class_label] = split2_list
@@ -107,6 +120,13 @@ def split_data(X_data, class_list, split_percent = 0.8):
 
 # For reading and loading a data
 def load_dataset(file_path):
+    """
+    Load dataset from a text file.
+    Args:
+        file_path (str): Path to the text file
+    Returns:
+        dataset (list): Loaded dataset as a list of lists
+    """
     # Initialize empty data set array
     dataset = []
     with open(file_path, "r") as rf:
@@ -118,6 +138,7 @@ def load_dataset(file_path):
     rf.close()
     return dataset
 
+
 # For scaling values to 0-255
 def scale_to_255(value):
     """
@@ -125,8 +146,82 @@ def scale_to_255(value):
 
     Args:
         value (float): Input value within [-1, 1]
+    Returns:
+        scaled (int): Scaled value within [0, 255]
     """
     if value < -1 or value > 1:
         raise ValueError("Input must be within [-1, 1]")
     scaled = int(((value + 1) / 2) * 255)
     return scaled
+
+
+# For quantizing the values through a binning process
+def binning_quantization(value, bin_size, num_bins):
+    """
+    Quantize a value into bins.
+
+    Args:
+        value (int): Input value
+        bin_size (int): Size of each bin
+        num_bins (int): Number of bins
+    Returns:
+        quantized_value (int): Quantized bin index
+    """
+
+    quantized_value = value // bin_size
+    if quantized_value >= num_bins:
+        quantized_value = num_bins - 1
+    return quantized_value
+
+
+# Convert levels of a dataset
+def convert_levels(dataset, max_val, val_levels):
+    """
+    Convert levels of a dataset to different levels.
+    Args:
+        dataset: input dataset (dict of lists)
+        max_val: maximum possible value
+        val_levels: destination levels
+    Returns:
+        converted dataset (dict of lists)
+    """
+    dst_levels = (max_val // val_levels)
+    dataset_copy = dict()
+    for key in dataset:
+        for j in range(len(dataset[key])):
+            if key not in dataset_copy:
+                dataset_copy[key] = []
+            dataset_copy[key].append([
+                (x//dst_levels) for x in dataset[key][j]
+            ])
+    return dataset_copy
+
+
+# Binning quantization
+def convert_binning_quantization(dataset, max_val, num_bins):
+    """
+    Quantize a value into bins.
+
+    Args:
+        dataset: input dataset (dict of lists)
+        max_val (int): Maximum possible value
+        num_bins (int): Number of bins
+
+    Returns:
+        quantized_value (int): Quantized bin index
+    """
+    # For determining bin size
+    bin_size = max_val // num_bins
+    dataset_copy = dict()
+    for key in dataset:
+        for j in range(len(dataset[key])):
+
+            # Initialize dictionary key
+            if key not in dataset_copy:
+                dataset_copy[key] = []
+
+            dataset_copy[key].append([
+                binning_quantization(x, bin_size, num_bins) for x in dataset[key][j]
+            ])
+
+    return dataset_copy
