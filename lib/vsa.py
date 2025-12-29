@@ -495,11 +495,13 @@ class ModelVSA:
         self.test_class_accuracy = dict()
         self.model_accuracy = None
 
+
     # Main encoding function
     def encode(self, item_data):
         print(
             "Empty encoding, please make sure to override this function in the subclass."
         )
+
 
     # Training function
     def train_model(self, X_train):
@@ -534,6 +536,7 @@ class ModelVSA:
             # Updating class number
             self.class_am_count[class_label] = data_len
         print("Training complete!")
+
 
     def retrain_model(self, X_train):
         """
@@ -582,6 +585,7 @@ class ModelVSA:
 
         print("Retraining complete!")
 
+
     def test_model(self, X_test):
         """
         Test the VSA model using the provided test data.
@@ -622,6 +626,7 @@ class ModelVSA:
         accuracy = correct_count / total_count
         self.model_accuracy = accuracy
         return accuracy
+
 
     def print_model_stats(self):
         """
