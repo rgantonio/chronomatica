@@ -495,6 +495,11 @@ class ModelVSA:
         self.test_class_accuracy = dict()
         self.model_accuracy = None
 
+        # Some debugging parameters
+        self.tqdm_train_mode = True
+        self.tqdm_retrain_mode = True
+        self.tqdm_test_mode = True
+
 
     # Main encoding function
     def encode(self, item_data):
@@ -515,7 +520,10 @@ class ModelVSA:
             data_len = len(X_train[class_label])
 
             # Non-binarized training
-            for item_num in tqdm(range(data_len), desc=f"Training class {class_label}"):
+            for item_num in tqdm(
+                range(data_len), 
+                desc=f"Training class {class_label}", 
+                disable=not self.tqdm_train_mode):
                 # Getting encodede HV
                 encoded_vec = self.encode(X_train[class_label][item_num])
                 # Fill in the appropriate class
@@ -544,23 +552,27 @@ class ModelVSA:
         Args:
             X_train (list): A list of training data for each class.
         """
+        # Select if binarized AM or not
+        if self.binarize_am:
+            temp_class_am = self.class_am_bin
+        else:
+            temp_class_am = self.class_am_frozen
+
         for class_label in range(self.num_classes):
             data_len = len(X_train[class_label])
 
             # Retraining with binarized AM
             for item_num in tqdm(
-                range(data_len), desc=f"Retraining class {class_label}"
+                range(data_len),
+                desc=f"Retraining class {class_label}",
+                disable=not self.tqdm_retrain_mode
             ):
                 # Getting encoded HV
                 encoded_vec = self.encode(X_train[class_label][item_num])
-                # Predicting first but select if binarized AM or not
-                if self.binarize_am:
-                    class_am = self.class_am_bin
-                else:
-                    class_am = self.class_am_frozen
-
+                
+                # Predict item
                 predict_label = prediction_idx(
-                    class_am, encoded_vec, hv_type=self.hv_type
+                    temp_class_am, encoded_vec, hv_type=self.hv_type
                 )
 
                 # If incorrect we update the AMs
@@ -598,18 +610,21 @@ class ModelVSA:
         class_correct_count = 0
         total_count = 0
 
+        if self.binarize_am:
+            class_am = self.class_am_bin
+        else:
+            class_am = self.class_am_frozen
+
         for class_label in range(self.num_classes):
             data_len = len(X_test[class_label])
             class_correct_count = 0
-            for item_num in tqdm(range(data_len), desc=f"Testing class {class_label}"):
+            for item_num in tqdm(
+                range(data_len),
+                desc=f"Testing class {class_label}",
+                disable=not self.tqdm_test_mode):
                 # Getting encoded HV
                 encoded_vec = self.encode(X_test[class_label][item_num])
                 # Compare with each class AM
-                if self.binarize_am:
-                    class_am = self.class_am_bin
-                else:
-                    class_am = self.class_am_frozen
-
                 predict_label = prediction_idx(
                     class_am, encoded_vec, hv_type=self.hv_type
                 )
@@ -625,6 +640,7 @@ class ModelVSA:
         # Total score
         accuracy = correct_count / total_count
         self.model_accuracy = accuracy
+        print("Testing complete!")
         return accuracy
 
 
