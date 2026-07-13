@@ -8,6 +8,10 @@
 - `tutorial` contains `.md` files used with explanation and exercise questions.
 - `py` contains Python programs used in the corresponding tutorial exercises. It has sub-directories numbered with `pN` where `N` is the tutorial number.
 
+# Run Instructions
+- This tutorial was made quick with the help of AI.
+- If you want to see how each program runs, simply go into one of the `py/p*` directories and run `python <insert program here>`
+
 # References
 - Original paper can be found [here](https://arxiv.org/abs/1902.10345)
 - The main github repository for Dace is [here](https://github.com/spcl/dace)
